@@ -9,8 +9,8 @@ import (
 
 var mySigningKey = []byte("our_secret-key_is-very_strongue")
 
-// GenerateJWT Given an username as parameter, returns a JWT token
-func GenerateJWT(userID string) (string, error) {
+// GenerateToken Given an username as parameter, returns a JWT token
+func GenerateToken(userID string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
@@ -27,4 +27,20 @@ func GenerateJWT(userID string) (string, error) {
 	}
 
 	return tokenString, nil
+}
+
+// VerifyToken Given a token, checks if it's valid
+func VerifyToken(tokenToVerify string) bool {
+	token, err := jwt.Parse(tokenToVerify, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("There was an error")
+		}
+		return mySigningKey, nil
+	})
+
+	if err != nil {
+		return false
+	}
+
+	return token.Valid
 }
