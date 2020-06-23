@@ -1,3 +1,5 @@
-/src/github.com
-/src/golang.org
 .env
+tmp
+assets
+bin
+vendor
