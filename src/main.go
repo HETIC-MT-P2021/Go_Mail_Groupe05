@@ -17,7 +17,7 @@ func isRunning(c *gin.Context) {
 	})
 }
 
-func isAuthenticated() gin.HandlerFunc {
+func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authenticated := auth.VerifyToken(c.Request.Header.Get("Token"))
 
@@ -34,21 +34,26 @@ func isAuthenticated() gin.HandlerFunc {
 	}
 }
 
-func attemptAuth(c *gin.Context) {
-	username := c.Param("username")
+func verifyUserCredentials(email string, password string) bool {
+	return email == "akakpo.jeanjacques@gmail.com" && password == "azerty"
+}
 
-	if username != "" {
-		validToken, _ := auth.GenerateToken(username)
+func attemptLogin(c *gin.Context) {
+	email := c.PostForm("email")
+	password := c.PostForm("password")
 
+	if !verifyUserCredentials(email, password) {
 		c.JSON(http.StatusOK, gin.H{
-			"token":   validToken,
-			"success": true,
+			"token":   false,
+			"success": false,
+			"message": "Please provide valid login credentials",
 		})
 	} else {
+		token, _ := auth.GenerateToken(email + password)
 		c.JSON(http.StatusOK, gin.H{
-			"token":   "",
-			"success": false,
-			"message": "Please provide a value to :username parameter",
+			"access_token": token,
+			"message":      "Logged in successfully",
+			"success":      true,
 		})
 	}
 }
@@ -60,11 +65,11 @@ func main() {
 	public := router.Group("/")
 	{
 		public.GET("/", isRunning)
-		public.POST("/auth/:username", attemptAuth)
+		public.POST("/login", attemptLogin)
 	}
 
 	api := router.Group("/api")
-	api.Use(isAuthenticated())
+	api.Use(authMiddleware())
 	{
 		api.GET("/users", isRunning)
 	}

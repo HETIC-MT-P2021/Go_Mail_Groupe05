@@ -1,5 +1,5 @@
 .env
-tmp
-assets
-bin
-vendor
+**/*/tmp
+**/*/assets
+**/*/bin
+**/*/vendor
