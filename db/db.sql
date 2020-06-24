@@ -8,6 +8,6 @@ CREATE TABLE business (
 CREATE TABLE users (
     user_id bigserial PRIMARY KEY,
     email VARCHAR (128) NOT NULL,
-    password VARCHAR (256) NOT NULL,
+    password bytea NOT NULL,
     enterprise_id serial
 );

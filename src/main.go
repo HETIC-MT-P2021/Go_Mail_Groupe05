@@ -1,14 +1,23 @@
 package main
 
 import (
+	"database/sql"
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"packages.hetic.net/gomail/auth"
+	"packages.hetic.net/gomail/db"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
 )
+
+type handleDbSalt struct {
+	Db         *sql.DB
+	SaltString string
+}
 
 func isRunning(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
@@ -33,25 +42,14 @@ func authMiddleware() gin.HandlerFunc {
 	}
 }
 
-func userCredentialsAreValid(email string, password string) bool {
-	return email == "akakpo.jeanjacques@gmail.com" && password == "azerty"
-}
+func (paramHandler *handleDbSalt) attemptLogin(c *gin.Context) {
+	dbConnection := paramHandler.Db
+	saltString := paramHandler.SaltString
 
-func getFieldInBody(c *gin.Context, fieldName string) string {
-	mapValues := map[string]string{}
-	if err := c.ShouldBindJSON(&mapValues); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, err.Error())
-		return ""
-	}
-
-	return mapValues[fieldName]
-}
-
-func attemptLogin(c *gin.Context) {
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 
-	if !userCredentialsAreValid(email, password) {
+	if !db.VerifyUserCredentials(email, password, dbConnection, saltString) {
 		c.JSON(http.StatusOK, gin.H{
 			"tokens":  false,
 			"success": false,
@@ -71,7 +69,9 @@ func attemptLogin(c *gin.Context) {
 }
 
 func refreshToken(c *gin.Context) {
-	refreshToken := getFieldInBody(c, "refresh_token")
+	refreshToken := c.PostForm("refresh_token")
+
+	fmt.Println(refreshToken)
 	userID, err := auth.RefreshTokenIsValid(refreshToken)
 
 	if err != nil {
@@ -94,20 +94,29 @@ func refreshToken(c *gin.Context) {
 }
 
 func main() {
-	env, _ := godotenv.Read()
+	env, _ := godotenv.Read(".env")
+
+	dbPort, err := strconv.ParseInt(env["DB_PORT"], 10, 64)
+
+	if err != nil {
+		panic(err)
+	}
+
+	var dbCon = db.ConnectToDB(env["DB_HOST"], env["DB_NAME"], env["DB_USER"], env["DB_PASSWORD"], dbPort)
+
 	router := gin.New()
 
 	public := router.Group("/")
 	{
 		public.GET("/", isRunning)
-		public.POST("/login", attemptLogin)
-		public.POST("/refresh-token", refreshToken)
-	}
 
-	api := router.Group("/api")
-	api.Use(authMiddleware())
-	{
-		api.GET("/users", isRunning)
+		Obj := new(handleDbSalt)
+		Obj.Db = dbCon
+		Obj.SaltString = env["PW_SALT"]
+
+		public.POST("/login", Obj.attemptLogin)
+
+		public.POST("/refresh-token", refreshToken)
 	}
 
 	router.Run(":" + env["API_PORT"])
