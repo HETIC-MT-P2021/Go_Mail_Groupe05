@@ -19,11 +19,10 @@ func isRunning(c *gin.Context) {
 
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authenticated := auth.VerifyToken(c.Request.Header.Get("Token"))
-
-		if !authenticated {
+		err := auth.TokenIsValid(c.Request)
+		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
-				"message": "Forbidden! You are not authorized",
+				"message": err.Error(),
 				"success": false,
 			})
 			c.Abort()
@@ -34,26 +33,62 @@ func authMiddleware() gin.HandlerFunc {
 	}
 }
 
-func verifyUserCredentials(email string, password string) bool {
+func userCredentialsAreValid(email string, password string) bool {
 	return email == "akakpo.jeanjacques@gmail.com" && password == "azerty"
+}
+
+func getFieldInBody(c *gin.Context, fieldName string) string {
+	mapValues := map[string]string{}
+	if err := c.ShouldBindJSON(&mapValues); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, err.Error())
+		return ""
+	}
+
+	return mapValues[fieldName]
 }
 
 func attemptLogin(c *gin.Context) {
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 
-	if !verifyUserCredentials(email, password) {
+	if !userCredentialsAreValid(email, password) {
 		c.JSON(http.StatusOK, gin.H{
-			"token":   false,
+			"tokens":  false,
 			"success": false,
 			"message": "Please provide valid login credentials",
 		})
 	} else {
-		token, _ := auth.GenerateToken(email + password)
-		c.JSON(http.StatusOK, gin.H{
-			"access_token": token,
-			"message":      "Logged in successfully",
-			"success":      true,
+		tokens, _ := auth.GenerateToken(email + password)
+		c.JSON(http.StatusCreated, gin.H{
+			"tokens": map[string]string{
+				"access_token":  tokens.AccessToken,
+				"refresh_token": tokens.RefreshToken,
+			},
+			"message": "Logged in successfully",
+			"success": true,
+		})
+	}
+}
+
+func refreshToken(c *gin.Context) {
+	refreshToken := getFieldInBody(c, "refresh_token")
+	userID, err := auth.RefreshTokenIsValid(refreshToken)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"tokens":  false,
+			"message": err.Error(),
+			"success": false,
+		})
+	} else {
+		tokens, _ := auth.GenerateToken(userID)
+		c.JSON(http.StatusCreated, gin.H{
+			"tokens": map[string]string{
+				"access_token":  tokens.AccessToken,
+				"refresh_token": tokens.RefreshToken,
+			},
+			"message": "Tokens refreshed",
+			"success": true,
 		})
 	}
 }
@@ -66,6 +101,7 @@ func main() {
 	{
 		public.GET("/", isRunning)
 		public.POST("/login", attemptLogin)
+		public.POST("/refresh-token", refreshToken)
 	}
 
 	api := router.Group("/api")
@@ -74,5 +110,5 @@ func main() {
 		api.GET("/users", isRunning)
 	}
 
-	router.Run(env["API_PORT"])
+	router.Run(":" + env["API_PORT"])
 }
