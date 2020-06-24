@@ -1,14 +1,22 @@
 package main
 
 import (
+	"database/sql"
 	"net/http"
+	"strconv"
 
 	"packages.hetic.net/gomail/auth"
+	"packages.hetic.net/gomail/db"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
 )
+
+type handleDbSalt struct {
+	Db         *sql.DB
+	SaltString string
+}
 
 func isRunning(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
@@ -34,15 +42,14 @@ func authMiddleware() gin.HandlerFunc {
 	}
 }
 
-func verifyUserCredentials(email string, password string) bool {
-	return email == "akakpo.jeanjacques@gmail.com" && password == "azerty"
-}
+func (paramHandler *handleDbSalt) attemptLogin(c *gin.Context) {
+	dbConnection := paramHandler.Db
+	saltString := paramHandler.SaltString
 
-func attemptLogin(c *gin.Context) {
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 
-	if !verifyUserCredentials(email, password) {
+	if !db.VerifyUserCredentials(email, password, dbConnection, saltString) {
 		c.JSON(http.StatusOK, gin.H{
 			"token":   false,
 			"success": false,
@@ -59,20 +66,28 @@ func attemptLogin(c *gin.Context) {
 }
 
 func main() {
-	env, _ := godotenv.Read()
+	env, _ := godotenv.Read("../.env")
+
+	dbPort, err := strconv.ParseInt(env["DB_PORT"], 10, 64)
+
+	if err != nil {
+		panic(err)
+	}
+
+	var dbCon = db.ConnectToDB(env["DB_HOST"], env["DB_NAME"], env["DB_USER"], env["DB_PASSWORD"], dbPort)
+
 	router := gin.New()
 
 	public := router.Group("/")
 	{
 		public.GET("/", isRunning)
-		public.POST("/login", attemptLogin)
+
+		Obj := new(handleDbSalt)
+		Obj.Db = dbCon
+		Obj.SaltString = env["PW_SALT"]
+
+		public.POST("/login", Obj.attemptLogin)
 	}
 
-	api := router.Group("/api")
-	api.Use(authMiddleware())
-	{
-		api.GET("/users", isRunning)
-	}
-
-	router.Run(env["API_PORT"])
+	router.Run("0.0.0.0:" + env["API_PORT"])
 }
