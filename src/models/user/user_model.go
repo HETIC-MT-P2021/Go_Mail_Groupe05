@@ -1,11 +1,10 @@
-package db
+package usermodel
 
 import (
 	"database/sql"
 	"fmt"
 
-	_ "github.com/lib/pq"
-	"packages.hetic.net/gomail/hash"
+	"packages.hetic.net/gomail/utils/hash"
 )
 
 // UnSavedUser represent the user's type before they are saved in the DB
@@ -22,27 +21,6 @@ type SavedUser struct {
 	Email        string
 	Password     []byte
 	EnterpriseID int
-}
-
-// ConnectToDB Set up connection to the postgres DB
-// Will panic on error
-func ConnectToDB(host string, dbname string, user string, password string, port int64) *sql.DB {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
-	db, err := sql.Open("postgres", psqlInfo)
-	if err != nil {
-		panic(err)
-	}
-
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Database successfully connected!")
-
-	return db
 }
 
 // GetUser will return a user from the DB
@@ -83,8 +61,8 @@ func GetUser(email string, db *sql.DB, getPassword bool) (SavedUser, error) {
 // CreateUser will add a new user to the DB
 // Will panic on error
 func CreateUser(user UnSavedUser, db *sql.DB, saltString string) (SavedUser, error) {
-	hashedPassword := hash.HashPassword(user.Password, saltString)
-	fmt.Println(hashedPassword)
+	hashedPassword := hash.Password(user.Password, saltString)
+
 	sqlStatement := `
 	INSERT INTO users (email, password, enterprise_id)
 	VALUES ($1, $2, $3) RETURNING user_id, email, enterprise_id;`
@@ -99,13 +77,6 @@ func CreateUser(user UnSavedUser, db *sql.DB, saltString string) (SavedUser, err
 	}
 	fmt.Println("Utiliateur Créé !")
 	return newUser, err
-}
-
-// CloseDbConnection will end dialogue with the DB
-// Recommanded to use at program's end
-func CloseDbConnection(db *sql.DB) {
-	defer db.Close()
-	fmt.Println("DB is closed")
 }
 
 // VerifyUserCredentials will fetch user's password and compare it with the one entered
