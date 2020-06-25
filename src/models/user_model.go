@@ -9,18 +9,18 @@ import (
 
 // UnSavedUser represent the user's type before they are saved in the DB
 type UnSavedUser struct {
-	UserID       int
-	Email        string
-	Password     string
-	EnterpriseID int
+	UserID     int
+	Email      string
+	Password   string
+	BusinessID int
 }
 
 // SavedUser represent the user's type after they are saved in the DB
 type SavedUser struct {
-	UserID       int
-	Email        string
-	Password     []byte
-	EnterpriseID int
+	UserID     int
+	Email      string
+	Password   []byte
+	BusinessID int
 }
 
 // GetUser will return a user from the DB
@@ -39,10 +39,10 @@ func GetUser(email string, db *sql.DB, getPassword bool) (SavedUser, error) {
 	var err error
 
 	if getPassword == true {
-		err = row.Scan(&user.UserID, &user.Email, &user.Password, &user.EnterpriseID)
+		err = row.Scan(&user.UserID, &user.Email, &user.Password, &user.BusinessID)
 	} else {
 
-		err = row.Scan(&user.UserID, &user.Email, &user.EnterpriseID)
+		err = row.Scan(&user.UserID, &user.Email, &user.BusinessID)
 	}
 
 	switch err {
@@ -66,8 +66,8 @@ func CreateUser(user UnSavedUser, db *sql.DB, saltString string) (SavedUser, err
 
 	var newUser SavedUser
 
-	row := db.QueryRow(sqlStatement, user.Email, hashedPassword, user.EnterpriseID)
-	err := row.Scan(&newUser.UserID, &newUser.Email, &newUser.EnterpriseID)
+	row := db.QueryRow(sqlStatement, user.Email, hashedPassword, user.BusinessID)
+	err := row.Scan(&newUser.UserID, &newUser.Email, &newUser.BusinessID)
 
 	if err != nil {
 		return newUser, err
