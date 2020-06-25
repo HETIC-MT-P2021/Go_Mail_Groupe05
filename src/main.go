@@ -3,7 +3,7 @@ package main
 import (
 	"strconv"
 
-	dbmodel "packages.hetic.net/gomail/models/db"
+	model "packages.hetic.net/gomail/models"
 	route "packages.hetic.net/gomail/routes"
 
 	"github.com/joho/godotenv"
@@ -19,7 +19,7 @@ func main() {
 		panic(err)
 	}
 
-	var dbCon = dbmodel.ConnectToDB(env["DB_HOST"], env["DB_NAME"], env["DB_USER"], env["DB_PASSWORD"], dbPort)
+	var dbCon = model.ConnectToDB(env["DB_HOST"], env["DB_NAME"], env["DB_USER"], env["DB_PASSWORD"], dbPort)
 
 	route.StartRouter(env["API_PORT"], dbCon, env["PW_SALT"])
 }

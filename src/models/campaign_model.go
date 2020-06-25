@@ -1,4 +1,4 @@
-package campaignmodel
+package models
 
 // Campaign Represents a mail campaign
 type Campaign struct {

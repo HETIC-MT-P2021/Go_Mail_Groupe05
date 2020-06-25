@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	authcontroller "packages.hetic.net/gomail/controllers/auth"
+	"packages.hetic.net/gomail/controllers"
 )
 
 func isRunning(c *gin.Context) {
@@ -23,13 +23,13 @@ func StartRouter(apiPort string, dbCon *sql.DB, saltString string) {
 	{
 		public.GET("/", isRunning)
 
-		Obj := new(authcontroller.HandleDbSalt)
+		Obj := new(controllers.HandleDbSalt)
 		Obj.Db = dbCon
 		Obj.SaltString = saltString
 
 		public.POST("/login", Obj.AttemptLogin)
 
-		public.POST("/refresh-token", authcontroller.RefreshToken)
+		public.POST("/refresh-token", controllers.RefreshToken)
 	}
 
 	router.Run(":" + apiPort)

@@ -1,10 +1,10 @@
-package usermodel
+package models
 
 import (
 	"database/sql"
 	"fmt"
 
-	"packages.hetic.net/gomail/utils/hash"
+	"packages.hetic.net/gomail/utils"
 )
 
 // UnSavedUser represent the user's type before they are saved in the DB
@@ -61,7 +61,7 @@ func GetUser(email string, db *sql.DB, getPassword bool) (SavedUser, error) {
 // CreateUser will add a new user to the DB
 // Will panic on error
 func CreateUser(user UnSavedUser, db *sql.DB, saltString string) (SavedUser, error) {
-	hashedPassword := hash.Password(user.Password, saltString)
+	hashedPassword := utils.HashPassword(user.Password, saltString)
 
 	sqlStatement := `
 	INSERT INTO users (email, password, enterprise_id)
@@ -88,5 +88,5 @@ func VerifyUserCredentials(email string, password string, dbConnection *sql.DB, 
 		return false
 	}
 
-	return hash.CheckPass(password, thisUser.Password, saltString)
+	return utils.CheckPass(password, thisUser.Password, saltString)
 }

@@ -1,4 +1,4 @@
-package hash
+package utils
 
 import (
 	"golang.org/x/crypto/argon2"
@@ -12,8 +12,8 @@ type params struct {
 	keyLength   uint32
 }
 
-// Password will hash a given string into a unreadable byte array
-func Password(password string, saltString string) []byte {
+// HashPassword will hash a given string into a unreadable byte array
+func HashPassword(password string, saltString string) []byte {
 	p := &params{
 		memory:      64 * 1024,
 		iterations:  3,
@@ -33,7 +33,7 @@ func Password(password string, saltString string) []byte {
 
 // CheckPass will check if a user's saved password and a given hashed password are the same
 func CheckPass(enteredPassword string, savedPassword []byte, saltString string) bool {
-	hashedEnteredPassword := Password(enteredPassword, saltString)
+	hashedEnteredPassword := HashPassword(enteredPassword, saltString)
 
 	var isTheSame = true
 
