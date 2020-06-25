@@ -8,7 +8,7 @@ import (
 	"packages.hetic.net/gomail/controllers"
 )
 
-func isRunning(c *gin.Context) {
+func healthCheck(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "API is running successfully",
 		"success": true,
@@ -21,7 +21,7 @@ func StartRouter(apiPort string, dbCon *sql.DB, saltString string) {
 
 	public := router.Group("/")
 	{
-		public.GET("/", isRunning)
+		public.GET("/", healthCheck)
 
 		Obj := new(controllers.HandleDbSalt)
 		Obj.Db = dbCon

@@ -16,11 +16,13 @@ func ConnectToDB(host string, dbname string, user string, password string, port 
 		host, port, user, password, dbname)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
+		fmt.Println("Database connection params error")
 		panic(err)
 	}
 
 	err = db.Ping()
 	if err != nil {
+		fmt.Println("Database initialisation error")
 		panic(err)
 	}
 

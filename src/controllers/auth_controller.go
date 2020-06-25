@@ -40,11 +40,13 @@ func (paramHandler *HandleDbSalt) AttemptLogin(c *gin.Context) {
 	email := c.PostForm("email")
 	password := c.PostForm("password")
 
-	if !models.VerifyUserCredentials(email, password, dbConnection, saltString) {
-		c.JSON(http.StatusOK, gin.H{
+	isGoodPassword, err := models.VerifyUserCredentials(email, password, dbConnection, saltString)
+
+	if !isGoodPassword {
+		c.JSON(http.StatusBadRequest, gin.H{
 			"tokens":  false,
 			"success": false,
-			"message": "Please provide valid login credentials",
+			"message": err,
 		})
 	} else {
 		tokens, _ := utils.GenerateToken(email + password)
