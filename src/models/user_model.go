@@ -2,7 +2,7 @@ package models
 
 import (
 	"database/sql"
-	"fmt"
+	"errors"
 
 	"packages.hetic.net/gomail/utils"
 )
@@ -24,7 +24,6 @@ type SavedUser struct {
 }
 
 // GetUser will return a user from the DB
-// Will panic on error
 func GetUser(email string, db *sql.DB, getPassword bool) (SavedUser, error) {
 	var sqlStatement string
 
@@ -48,18 +47,16 @@ func GetUser(email string, db *sql.DB, getPassword bool) (SavedUser, error) {
 
 	switch err {
 	case sql.ErrNoRows:
-		fmt.Println("User does not exist!")
-		return user, nil
+		return user, errors.New("Notfound, no user found for this email")
 	case nil:
 		return user, nil
 
 	default:
-		panic(err)
+		return user, errors.New("Internal Server error")
 	}
 }
 
 // CreateUser will add a new user to the DB
-// Will panic on error
 func CreateUser(user UnSavedUser, db *sql.DB, saltString string) (SavedUser, error) {
 	hashedPassword := utils.HashPassword(user.Password, saltString)
 
@@ -73,20 +70,19 @@ func CreateUser(user UnSavedUser, db *sql.DB, saltString string) (SavedUser, err
 	err := row.Scan(&newUser.UserID, &newUser.Email, &newUser.EnterpriseID)
 
 	if err != nil {
-		panic(err)
+		return newUser, err
 	}
-	fmt.Println("Utiliateur Créé !")
-	return newUser, err
+	return newUser, nil
 }
 
 // VerifyUserCredentials will fetch user's password and compare it with the one entered
 // Recommanded to use at program's end
-func VerifyUserCredentials(email string, password string, dbConnection *sql.DB, saltString string) bool {
+func VerifyUserCredentials(email string, password string, dbConnection *sql.DB, saltString string) (bool, error) {
 	thisUser, err := GetUser(email, dbConnection, true)
 
 	if err != nil {
-		return false
+		return false, err
 	}
 
-	return utils.CheckPass(password, thisUser.Password, saltString)
+	return utils.CheckPass(password, thisUser.Password, saltString), nil
 }
