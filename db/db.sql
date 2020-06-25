@@ -3,7 +3,8 @@ CREATE DATABASE gomail;
 CREATE TABLE business
 (
   business_id serial PRIMARY KEY,
-  name VARCHAR (64) NOT NULL
+  name VARCHAR (64) NOT NULL,
+  UNIQUE (name)
 );
 
 CREATE TABLE users (

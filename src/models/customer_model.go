@@ -12,7 +12,7 @@ type Customer struct {
 }
 
 // CreateAndLinkCustomer will add a new customer and link it to a mailing list in the DB
-func CreateAndLinkCustomer(email string, name string, surname string, businessID int, mailingListID int, db *sql.DB) (Customer, error) {
+func CreateAndLinkCustomer(email string, name string, surname string, businessID string, mailingListID string, db *sql.DB) (Customer, error) {
 	var newCustomer Customer
 
 	customerSQL := `
@@ -41,7 +41,7 @@ func CreateAndLinkCustomer(email string, name string, surname string, businessID
 }
 
 // CreateCustomer will add a new customer to the DB
-func CreateCustomer(email string, name string, surname string, businessID int, db *sql.DB) (Customer, error) {
+func CreateCustomer(email string, name string, surname string, businessID string, db *sql.DB) (Customer, error) {
 	var newCustomer Customer
 
 	customerSQL := `
@@ -59,7 +59,7 @@ func CreateCustomer(email string, name string, surname string, businessID int, d
 }
 
 // UnlinkCustomerMailingList will remove a customer from a mailing list
-func UnlinkCustomerMailingList(customerID int, mailingListID int, db *sql.DB) error {
+func UnlinkCustomerMailingList(customerID string, mailingListID string, db *sql.DB) error {
 
 	unlinkSQL := `
 	DELETE * FROM mailing_list_customer_assoc WHERE mailing_list_id=$1 AND customer_id=$2;`
@@ -72,4 +72,21 @@ func UnlinkCustomerMailingList(customerID int, mailingListID int, db *sql.DB) er
 	}
 
 	return nil
+}
+
+// GetCustomer will get a customer from the DB
+func GetCustomer(customerID string, db *sql.DB) (Customer, error) {
+	var thisCustomer Customer
+
+	customerSQL := `
+	SELECT * FROM customer WHERE customer_id=$1`
+
+	customerRow := db.QueryRow(customerSQL, customerID)
+	custErr := customerRow.Scan(&thisCustomer.CustomerID, &thisCustomer.Email, &thisCustomer.Name, &thisCustomer.Surname, &thisCustomer.BusinessID)
+
+	if custErr != nil {
+		return thisCustomer, custErr
+	}
+
+	return thisCustomer, nil
 }

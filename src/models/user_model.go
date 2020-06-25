@@ -57,8 +57,8 @@ func GetUser(email string, db *sql.DB, getPassword bool) (SavedUser, error) {
 }
 
 // CreateUser will add a new user to the DB
-func CreateUser(user UnSavedUser, db *sql.DB, saltString string) (SavedUser, error) {
-	hashedPassword := utils.HashPassword(user.Password, saltString)
+func CreateUser(email string, password string, businessID string, db *sql.DB, saltString string) (SavedUser, error) {
+	hashedPassword := utils.HashPassword(password, saltString)
 
 	sqlStatement := `
 	INSERT INTO users (email, password, enterprise_id)
@@ -66,7 +66,7 @@ func CreateUser(user UnSavedUser, db *sql.DB, saltString string) (SavedUser, err
 
 	var newUser SavedUser
 
-	row := db.QueryRow(sqlStatement, user.Email, hashedPassword, user.BusinessID)
+	row := db.QueryRow(sqlStatement, email, hashedPassword, businessID)
 	err := row.Scan(&newUser.UserID, &newUser.Email, &newUser.BusinessID)
 
 	if err != nil {

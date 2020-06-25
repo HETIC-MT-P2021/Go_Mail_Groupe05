@@ -23,7 +23,7 @@ func StartRouter(apiPort string, dbCon *sql.DB, saltString string) {
 	{
 		public.GET("/", healthCheck)
 
-		Obj := new(controllers.HandleDbSalt)
+		Obj := new(controllers.HandleDbAndSalt)
 		Obj.Db = dbCon
 		Obj.SaltString = saltString
 

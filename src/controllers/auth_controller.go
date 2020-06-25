@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"database/sql"
 	"net/http"
 
 	"packages.hetic.net/gomail/models"
@@ -9,12 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
-
-// HandleDbSalt is a structure to pass parameters in routes/controllers
-type HandleDbSalt struct {
-	Db         *sql.DB
-	SaltString string
-}
 
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -33,8 +26,8 @@ func authMiddleware() gin.HandlerFunc {
 }
 
 // AttemptLogin handle request to send an accessToken for a given user
-func (paramHandler *HandleDbSalt) AttemptLogin(c *gin.Context) {
-	dbConnection := paramHandler.Db
+func (paramHandler *HandleDbAndSalt) AttemptLogin(c *gin.Context) {
+	dbConnection := paramHandler.DbCon
 	saltString := paramHandler.SaltString
 
 	email := c.PostForm("email")
@@ -44,14 +37,14 @@ func (paramHandler *HandleDbSalt) AttemptLogin(c *gin.Context) {
 
 	if !isGoodPassword {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"tokens":  false,
+			"content": false,
 			"success": false,
 			"message": err,
 		})
 	} else {
 		tokens, _ := utils.GenerateToken(email + password)
 		c.JSON(http.StatusCreated, gin.H{
-			"tokens": map[string]string{
+			"content": map[string]string{
 				"access_token":  tokens.AccessToken,
 				"refresh_token": tokens.RefreshToken,
 			},

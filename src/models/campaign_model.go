@@ -1,6 +1,10 @@
 package models
 
-import "database/sql"
+import (
+	"database/sql"
+
+	"github.com/gin-gonic/gin"
+)
 
 // Campaign Represents a mail campaign
 type Campaign struct {
@@ -11,7 +15,7 @@ type Campaign struct {
 }
 
 // CreateCampaignWithExistingMailingList will add a new Campaign to the DB with an existing mailingList
-func CreateCampaignWithExistingMailingList(campaignName string, mailingListID int, businessID int, db *sql.DB) (Campaign, error) {
+func CreateCampaignWithExistingMailingList(campaignName string, mailingListID string, businessID string, db *sql.DB) (Campaign, error) {
 	sqlStatement := `
 	INSERT INTO campaign (name, mailing_list_id, business_id)
 	VALUES ($1, $2, $3) RETURNING *;`
@@ -28,7 +32,7 @@ func CreateCampaignWithExistingMailingList(campaignName string, mailingListID in
 }
 
 // CreateCampaignAndMailingList will add a new Campaign and a new mailingList to the DB
-func CreateCampaignAndMailingList(mailingListName string, campaignName string, businessID int, db *sql.DB) (MailingList, Campaign, error) {
+func CreateCampaignAndMailingList(mailingListName string, campaignName string, businessID string, db *sql.DB) (MailingList, Campaign, error) {
 	var newMailingList MailingList
 	var newCampaign Campaign
 
@@ -54,4 +58,42 @@ func CreateCampaignAndMailingList(mailingListName string, campaignName string, b
 		return newMailingList, newCampaign, err
 	}
 	return newMailingList, newCampaign, nil
+}
+
+// GetCampaign will add a get information from a campaign
+func GetCampaign(campaignID string, db *sql.DB) (Campaign, error) {
+	var thisCampaign Campaign
+
+	campaignSQL := `SELECT * FROM campaign WHERE campaign_id=$1;`
+
+	campaignRow := db.QueryRow(campaignSQL, campaignID)
+	err := campaignRow.Scan(&thisCampaign.CampaignID, &thisCampaign.Name, &thisCampaign.MailingListID, &thisCampaign.BusinessID)
+
+	if err != nil {
+		return thisCampaign, err
+	}
+	return thisCampaign, nil
+}
+
+// GetBusinessCampaigns will get all  campaigns from a business
+func GetBusinessCampaigns(businessID string, db *sql.DB, c *gin.Context) ([]Campaign, error) {
+	var thisCampaigns []Campaign
+
+	campaignSQL := `SELECT * FROM campaign WHERE business_id=$1;`
+
+	rows, err := db.QueryContext(c, campaignSQL, businessID)
+
+	if err != nil {
+		return thisCampaigns, err
+	}
+
+	for rows.Next() {
+		var thisCampaign Campaign
+		if err = rows.Scan(&thisCampaign.CampaignID, &thisCampaign.Name, &thisCampaign.MailingListID, &thisCampaign.BusinessID); err != nil {
+			return thisCampaigns, err
+		}
+		thisCampaigns = append(thisCampaigns, thisCampaign)
+	}
+
+	return thisCampaigns, nil
 }
