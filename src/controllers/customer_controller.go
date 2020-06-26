@@ -11,7 +11,7 @@ import (
 func (paramHandler *HandleDb) GetCustomer(c *gin.Context) {
 	dbConnection := paramHandler.DbCon
 
-	cutomerID := c.PostForm("customer_id")
+	cutomerID := c.Param("customerID")
 
 	thisCustomer, err := models.GetCustomer(cutomerID, dbConnection)
 

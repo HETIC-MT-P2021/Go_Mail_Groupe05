@@ -61,7 +61,7 @@ func (paramHandler *HandleDb) CreateCampaignAndMailingList(c *gin.Context) {
 func (paramHandler *HandleDb) GetCampaign(c *gin.Context) {
 	dbConnection := paramHandler.DbCon
 
-	campaignID := c.PostForm("campaign_id")
+	campaignID := c.Param("campaignID")
 
 	thisCampaign, err := models.GetCampaign(campaignID, dbConnection)
 
@@ -84,7 +84,7 @@ func (paramHandler *HandleDb) GetCampaign(c *gin.Context) {
 func (paramHandler *HandleDb) GetCampaignByBusinessID(c *gin.Context) {
 	dbConnection := paramHandler.DbCon
 
-	businessID := c.PostForm("business_id")
+	businessID := c.Param("businessID")
 
 	thisCampaigns, err := models.GetBusinessCampaigns(businessID, dbConnection, c)
 
