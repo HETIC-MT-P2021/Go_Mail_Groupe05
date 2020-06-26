@@ -6,6 +6,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.6.3
 	github.com/joho/godotenv v1.3.0
+	github.com/jordan-wright/email v0.0.0-20200602115436-fd8a7622303e
 	github.com/lib/pq v1.7.0
 	github.com/myesui/uuid v1.0.0 // indirect
 	github.com/twinj/uuid v1.0.0

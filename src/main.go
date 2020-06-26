@@ -22,4 +22,5 @@ func main() {
 	var dbCon = model.ConnectToDB(env["DB_HOST"], env["DB_NAME"], env["DB_USER"], env["DB_PASSWORD"], dbPort)
 
 	route.StartRouter(env["API_PORT"], dbCon, env["PW_SALT"])
+
 }
