@@ -35,7 +35,7 @@ func (paramHandler *HandleDb) CreateMailingList(c *gin.Context) {
 func (paramHandler *HandleDb) GetMailingList(c *gin.Context) {
 	dbConnection := paramHandler.DbCon
 
-	mailingListID := c.PostForm("mailing_list_id")
+	mailingListID := c.Param("mailingListID")
 
 	mailingList, customers, err := models.GetMailingList(mailingListID, dbConnection, c)
 

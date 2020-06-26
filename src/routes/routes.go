@@ -29,42 +29,45 @@ func StartRouter(apiPort string, dbCon *sql.DB, saltString string) {
 	public := router.Group("/")
 	{
 		public.GET("/", healthCheck)
+
 		public.POST("/login", DbAndSaltHandler.AttemptLogin)
 		public.POST("/refresh-token", controllers.RefreshToken)
 	}
 
-	business := router.Group("/business")
+	apiRoutes := router.Group("/api")
+	apiRoutes.Use(controllers.AuthMiddleware())
 	{
-		business.GET("/:businessID", DbHandler.GetBusiness)
-		business.POST("/", DbHandler.CreateBusiness)
-	}
+		// Business
 
-	user := router.Group("/user")
-	{
-		user.POST("/", DbAndSaltHandler.CreateUser)
-	}
+		apiRoutes.GET("/business/:businessID", DbHandler.GetBusiness)
 
-	campaign := router.Group("/campaign")
-	{
-		campaign.GET("/:campaignID", DbHandler.GetCampaign)
-		campaign.GET("/:businessID", DbHandler.GetCampaignByBusinessID)
-		campaign.POST("/", DbHandler.CreateCampaign)
-		campaign.POST("/mailing-list", DbHandler.CreateCampaignAndMailingList)
+		apiRoutes.POST("business/", DbHandler.CreateBusiness)
 
-	}
+		// User
 
-	mailingList := router.Group("/mailing-list")
-	{
-		mailingList.GET("/:mailingListID", DbHandler.GetMailingList)
-		mailingList.POST("/", DbHandler.CreateMailingList)
-	}
+		apiRoutes.POST("/user", DbAndSaltHandler.CreateUser)
 
-	customer := router.Group("/customer")
-	{
-		customer.GET("/:customerID", DbHandler.GetCustomer)
-		customer.POST("/", DbHandler.CreateCustomer)
-		customer.POST("/link/", DbHandler.CreateAndLinkCustomer)
-		customer.POST("/unlink/", DbHandler.UnlinkCustomerMailingList)
+		// Campaign
+
+		apiRoutes.GET("/campaign/withid/:campaignID", DbHandler.GetCampaign)
+		apiRoutes.GET("/campaign/withbusiness/:businessID", DbHandler.GetCampaignByBusinessID)
+
+		apiRoutes.POST("/campaign", DbHandler.CreateCampaign)
+		apiRoutes.POST("/campaign/mailing-list", DbHandler.CreateCampaignAndMailingList)
+
+		// Mailing list
+
+		apiRoutes.GET("/mailing-list/:mailingListID", DbHandler.GetMailingList)
+
+		apiRoutes.POST("/mailing-list", DbHandler.CreateMailingList)
+
+		// Customer
+
+		apiRoutes.GET("/customer/:customerID", DbHandler.GetCustomer)
+
+		apiRoutes.POST("/customer", DbHandler.CreateCustomer)
+		apiRoutes.POST("/customer/link/", DbHandler.CreateAndLinkCustomer)
+		apiRoutes.POST("/customer/unlink/", DbHandler.UnlinkCustomerMailingList)
 	}
 
 	router.Run(":" + apiPort)

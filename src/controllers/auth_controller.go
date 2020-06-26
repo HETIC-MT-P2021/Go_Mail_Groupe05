@@ -9,7 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func authMiddleware() gin.HandlerFunc {
+// AuthMiddleware Verify the token is valid for secured routes
+func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		err := utils.TokenIsValid(c.Request)
 		if err != nil {
