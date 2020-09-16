@@ -3,7 +3,7 @@
 The goal of this project is to create a simple email manager such as Mailchimp.
 We used Golang for our API, and Postgresql as a database.
 
-## Features:
+## Features
 
 - User authentication with JWT.
 - Marketing Automation : Creation of marketing campaigns with sending emails to a specific mailing list
@@ -31,6 +31,13 @@ Feel free to discuss with any contributor about the technical choices that were 
 Go version : 1.14.4
 PostgreSQL : 12.3
 
-# Licence
+### Documentation
+
+You can find the api doc by clicking on the link below :
+[DOC](https://app.swaggerhub.com/apis/JWT_Golang/Mailing_in_Go/1.0.0)
+
+### Authors
+
+[Jean-Jacques](https://github.com/gensjaak) [Myouuu](https://github.com/myouuu) [Tsabot](https://github.com/Tsabot)
 
 The code is available under the MIT license.
