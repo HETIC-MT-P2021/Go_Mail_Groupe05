@@ -25,6 +25,13 @@ $ air
 Feel free to discuss with any contributor about the technical choices that were made.
 Go version : 1.14.4
 PostgreSQL : 12.3
+
+### Documentation:
+You can find the api doc  by clicking on the link below :
+[DOC](https://app.swaggerhub.com/apis/JWT_Golang/Mailing_in_Go/1.0.0)
+
+### Authors
+[Jean-Jacques](https://github.com/gensjaak)  [Myouuu](https://github.com/myouuu)  [Tsabot](https://github.com/Tsabot)
 # Licence
 The code is available under the MIT license.
 
