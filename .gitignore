@@ -1,5 +1,4 @@
-pkg
-src/.env
+.env
 **/*/tmp
 **/*/assets
 **/*/bin
