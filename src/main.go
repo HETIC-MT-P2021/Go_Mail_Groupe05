@@ -1,26 +1,30 @@
 package main
 
-import (
-	"strconv"
-
-	model "packages.hetic.net/gomail/models"
-	route "packages.hetic.net/gomail/routes"
-
-	"github.com/joho/godotenv"
-	_ "github.com/joho/godotenv/autoload"
-)
+import "gopkg.in/gomail.v2"
 
 func main() {
-	env, _ := godotenv.Read(".env")
+	m := gomail.NewMessage()
+	m.SetHeader("From", "SENDER_EMAIL")
+	m.SetHeader("To", "DEST_1_EMAIL", "DEST_2_EMAIL")
+	m.SetHeader("Subject", "SUBJECT")
+	m.SetBody("text/plain", "MESSAGE_IN_STRING")
+	m.SetBody("text/html", "MESSAGE_IN_HTML")
 
-	dbPort, err := strconv.ParseInt(env["DB_PORT"], 10, 64)
+	d := gomail.NewDialer("smtp.gmail.com", 465, "SENDER_EMAIL", "SENDER_GMAIL_PASSWORD")
 
-	if err != nil {
+	// Send the email to Bob, Cora and Dan.
+	if err := d.DialAndSend(m); err != nil {
 		panic(err)
 	}
+	// env, _ := godotenv.Read(".env")
 
-	var dbCon = model.ConnectToDB(env["DB_HOST"], env["DB_NAME"], env["DB_USER"], env["DB_PASSWORD"], dbPort)
+	// dbPort, err := strconv.ParseInt(env["DB_PORT"], 10, 64)
 
-	route.StartRouter(env["API_PORT"], dbCon, env["PW_SALT"])
+	// if err != nil {
+	// 	panic(err)
+	// }
 
+	// var dbCon = model.ConnectToDB(env["DB_HOST"], env["DB_NAME"], env["DB_USER"], env["DB_PASSWORD"], dbPort)
+
+	// route.StartRouter(env["API_PORT"], dbCon, env["PW_SALT"])
 }
