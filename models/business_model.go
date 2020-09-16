@@ -15,7 +15,7 @@ type Business struct {
 func CreateBusiness(businessName string) (Business, error) {
 	sqlStatement := `
 	INSERT INTO business (name)
-	VALUES ($1) RETURNING business_id, name;`
+	VALUES ($1) RETURNING id, name;`
 
 	var newBusiness Business
 
@@ -31,7 +31,7 @@ func CreateBusiness(businessName string) (Business, error) {
 // GetBusiness will return a business from it's ID from the DB
 func GetBusiness(businessID string) (Business, error) {
 
-	sqlStatement := `SELECT * FROM business WHERE business_id=$1;`
+	sqlStatement := `SELECT * FROM business WHERE id=$1;`
 
 	var business Business
 
@@ -43,7 +43,7 @@ func GetBusiness(businessID string) (Business, error) {
 
 	switch err {
 	case sql.ErrNoRows:
-		return business, errors.New("Notfound, no business found for this id")
+		return business, errors.New("notfound, no business found for this id")
 	case nil:
 		return business, nil
 
