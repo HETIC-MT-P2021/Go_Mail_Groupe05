@@ -42,12 +42,11 @@ func ConnectToRabbit(host string, port string, user string, password string) {
 	channel, err := instanceTmp.Channel()
 
 	failOnError(err, "Failed to open a channel")
-	defer channel.Close()
 
 	q, err := channel.QueueDeclare(
 		"mails", // name
-		false,   // durable
-		true,    // delete when unused
+		true,    // durable
+		false,   // delete when unused
 		false,   // exclusive
 		false,   // no-wait
 		nil,     // arguments
@@ -78,5 +77,4 @@ func PublishMailData(subject string, content string, from string, to []string) {
 		log.Printf(" [x] Sent %s", body)
 		failOnError(err, "Failed to publish a message")
 	}
-
 }
