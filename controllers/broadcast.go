@@ -6,15 +6,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/models"
-	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/utils"
+
 )
 
 // BroadcastCampaign handle request to send a mail to all customer of a campaign
 func BroadcastCampaign(c *gin.Context) {
 	campaignID := c.PostForm("campaignID")
-	mailFrom := c.PostForm("mailFrom")
-	content := c.PostForm("mailContent")
-	subject := c.PostForm("mailSubject")
+	_ = c.PostForm("mailFrom")
+	_ = c.PostForm("mailContent")
+	_ = c.PostForm("mailSubject")
 
 	campaign, err := models.GetCampaign(campaignID)
 
@@ -45,7 +45,7 @@ func BroadcastCampaign(c *gin.Context) {
 		customerEmails = append(customerEmails, customers[c].Email)
 	}
 
-	err = utils.SendEmail(customerEmails, []string{}, []string{}, subject, content, "", mailFrom)
+
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

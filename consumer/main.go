@@ -31,7 +31,7 @@ func ConnectToRabbit(host string, port string, user string, password string) {
 }
 
 // PublishMailData sends mail data to message broker
-func PublishMailData() {
+func Receive() {
 	channel, err := RabbitMQ.Channel()
 
 	failOnError(err, "Failed to open a channel")
@@ -71,6 +71,8 @@ func PublishMailData() {
 }
 
 func main() {
+
+	Receive()
 	env, _ := godotenv.Read(".env")
 
 	smtpPort, _ := strconv.Atoi(env["SMTP_PORT"])
