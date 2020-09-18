@@ -7,9 +7,8 @@ require (
 	github.com/gin-gonic/gin v1.6.3
 	github.com/joho/godotenv v1.3.0
 	github.com/lib/pq v1.7.0
-	github.com/masnun/gopher-and-rabbit v0.0.0-20190223090227-19d477901766 // indirect
 	github.com/myesui/uuid v1.0.0 // indirect
-	github.com/streadway/amqp v1.0.0 // indirect
+	github.com/streadway/amqp v1.0.0
 	github.com/twinj/uuid v1.0.0
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/sys v0.0.0-20200808120158-1030fc2bf1d9 // indirect

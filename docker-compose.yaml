@@ -27,15 +27,15 @@ services:
       - 5432:5432
 
   rabbit:
-    image: "rabbitmq:3-management"
-    hostname: "rabbit"
+    image: rabbitmq:3-management
+    hostname: rabbit
     environment:
-      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
-      RABBITMQ_DEFAULT_USER: "rabbitmq"
-      RABBITMQ_DEFAULT_PASS: "rabbitmq"
-      RABBITMQ_DEFAULT_VHOST: "/"
+      RABBITMQ_ERLANG_COOKIE: SWQOKODSQALRPCLNMEQG
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: V794QYkkpLUW8NfpW7wtZRnJRLnKVy
+      RABBITMQ_DEFAULT_VHOST: /
     ports:
-      - "15672:15672"
-      - "5672:5672"
+      - 15672:15672
+      - 5672:5672
     labels:
-      NAME: "rabbitmq"
+      NAME: rabbitmq

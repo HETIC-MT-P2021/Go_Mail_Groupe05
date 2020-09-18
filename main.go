@@ -5,6 +5,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"packages.hetic.net/gomail/models"
+	"packages.hetic.net/gomail/producer"
 	"packages.hetic.net/gomail/routes"
 	"packages.hetic.net/gomail/utils"
 )
@@ -21,6 +22,13 @@ func main() {
 	models.ConnectToDB(env["DB_HOST"], env["DB_NAME"], env["DB_USER"], env["DB_PASSWORD"], dbPort)
 
 	utils.InitSMTPCon(env["SMTP_USER"], env["SMTP_PASSWORD"])
+
+	producer.ConnectToRabbit(
+		env["RABBIT_HOST"],
+		env["RABBIT_PORT"],
+		env["RABBIT_USER"],
+		env["RABBIT_PASSWORD"],
+	)
 
 	routes.StartRouter(env["API_PORT"])
 }
