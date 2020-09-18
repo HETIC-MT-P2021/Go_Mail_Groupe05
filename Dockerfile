@@ -6,8 +6,7 @@ RUN mkdir /app
 ADD . /app
 WORKDIR /app
 
-RUN go get
-RUN go mod vendor
+RUN go mod tidy
 RUN go build -o main .
 
 CMD ["./main"]

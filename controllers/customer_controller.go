@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"packages.hetic.net/gomail/models"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/models"
 )
 
 // GetCustomer handle request to get a customer

@@ -1,7 +1,8 @@
 .env
-**/*/tmp
+tmp
 **/*/assets
 **/*/bin
 /vendor
 .DS_Store
 fake-smtp-emails
+postgres-data

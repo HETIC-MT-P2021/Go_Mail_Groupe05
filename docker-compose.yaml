@@ -1,19 +1,27 @@
 version: "3"
 
 services:
-  app:
-    build: .
-    environment:
-      GIN_MODE: "release"
-    volumes:
-      - .:/app
-    working_dir: /app
+  fake-smtp:
+    image: munkyboy/fakesmtp
+    container_name: fake-smtp
     ports:
-      - "8081:8081"
-    command: go run main.go
-    links:
-      - database
-      - fake-smtp
+      - "25:25"
+    volumes:
+      - ./fake-smtp-emails:/var/mail
+
+  rabbit:
+    image: rabbitmq:3-management
+    hostname: rabbit
+    environment:
+      RABBITMQ_ERLANG_COOKIE: SWQOKODSQALRPCLNMEQG
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: V794QYkkpLUW8NfpW7wtZRnJRLnKVy
+      RABBITMQ_DEFAULT_VHOST: /
+    ports:
+      - 15672:15672
+      - 5672:5672
+    labels:
+      NAME: rabbitmq
 
   database:
     image: postgres:13-alpine
@@ -26,12 +34,38 @@ services:
       - ./db:/docker-entrypoint-initdb.d
       - ./postgres-data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - 5433:5432
 
-  fake-smtp:
-    image: munkyboy/fakesmtp
-    container_name: fake-smtp
-    ports:
-      - "25:25"
+  mail-consumer:
+    build: ./consumer
     volumes:
-      - ./fake-smtp-emails:/var/mail
+      - .:/mail-consumer
+    working_dir: /mail-consumer
+    command: go run main.go
+    environment:
+      SMTP_HOST: "${SMTP_HOST}"
+      SMTP_PORT: "${SMTP_PORT}"
+      SMTP_USER: "${SMTP_USER}"
+      SMTP_PASSWORD: "${SMTP_PASSWORD}"
+    links:
+      - rabbit
+    depends_on:
+      - rabbit
+
+  app:
+    build: .
+    environment:
+      GIN_MODE: release
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - 8081:8081
+    command: go run main.go
+    links:
+      - database
+      - fake-smtp
+    depends_on:
+      - database
+      - fake-smtp
+      - mail-consumer

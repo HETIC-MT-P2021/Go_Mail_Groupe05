@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
-	"packages.hetic.net/gomail/models"
-	"packages.hetic.net/gomail/utils"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/models"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/utils"
 
 	"github.com/gin-gonic/gin"
 )
