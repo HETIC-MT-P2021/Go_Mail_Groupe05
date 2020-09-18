@@ -15,7 +15,7 @@ The project requires Golang `1.14.4` version
 Install the dependencies and start the service locally with theses commands:
 
 ```sh
-git clone https://github.com/HETIC-MT-P2021/go-mail-group5.git
+git clone https://github.com/HETIC-MT-P2021/Go_Mail_Groupe05.git
 go mod tidy
 go get -u github.com/cosmtrek/air
 air
