@@ -1,16 +1,12 @@
 FROM golang:alpine
 
 RUN apk add --no-cache git
-RUN mkdir /mail-consumer
+RUN mkdir /consumer
 
-ADD . /mail-consumer
-WORKDIR /mail-consumer
+ADD . /consumer
+WORKDIR /consumer
 
-RUN go get github.com/streadway/amqp
-RUN go get github.com/joho/godotenv
-RUN go get gopkg.in/gomail.v2
-RUN go get github.com/HETIC-MT-P2021/Go_Mail_Groupe05/consumer/mailing
-
+RUN go mod tidy
 RUN go build -o main .
 
 CMD ["./main"]

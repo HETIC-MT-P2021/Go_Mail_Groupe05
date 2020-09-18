@@ -1,6 +1,6 @@
-module github.com/HETIC-MT-P2021/Go_Mail_Groupe05
+module github.com/HETIC-MT-P2021/Go_Mail_Groupe05/app
 
-go 1.14
+go 1.15
 
 require (
 	github.com/cosmtrek/air v1.21.2 // indirect
@@ -19,6 +19,5 @@ require (
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/sys v0.0.0-20200917073148-efd3b9a0ff20 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
-	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/stretchr/testify.v1 v1.2.2 // indirect
 )

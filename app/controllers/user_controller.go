@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/models"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/app/models"
 )
 
 // CreateUser handle request to send create a new user

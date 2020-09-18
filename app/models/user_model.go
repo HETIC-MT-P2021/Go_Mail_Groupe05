@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/utils"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/app/utils"
 )
 
 // UnSavedUser represent the user's type before they are saved in the DB

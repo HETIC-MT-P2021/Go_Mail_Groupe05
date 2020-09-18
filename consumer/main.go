@@ -1,4 +1,4 @@
-package consumer
+package main
 
 import (
 	"fmt"
@@ -13,6 +13,8 @@ import (
 
 // RabbitMQ connection global instance
 var RabbitMQ *amqp.Connection
+var MailQueue *amqp.Queue
+var MailChannel *amqp.Channel
 
 func failOnError(err error, msg string) {
 	if err != nil {
@@ -38,17 +40,11 @@ func ConnectToRabbit(host string, port string, user string, password string) {
 	}
 
 	failOnError(err, "Failed to connect to RabbitMQ")
-	log.Println("Connected to RabbitMQ server successfully!")
+	log.Println("Connected to RabbitMQ server successfullyed!")
 
-	RabbitMQ = instanceTmp
-}
-
-// PublishMailData sends mail data to message broker
-func Receive() {
-	channel, err := RabbitMQ.Channel()
+	channel, err := instanceTmp.Channel()
 
 	failOnError(err, "Failed to open a channel")
-	defer channel.Close()
 
 	q, err := channel.QueueDeclare(
 		"mails", // name
@@ -60,14 +56,20 @@ func Receive() {
 	)
 	failOnError(err, "Failed to declare a queue")
 
-	msgs, err := channel.Consume(
-		q.Name, // queue
-		"",     // consumer
-		true,   // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
+	RabbitMQ = instanceTmp
+	MailQueue = &q
+	MailChannel = channel
+}
+
+func Receive() {
+	msgs, err := MailChannel.Consume(
+		MailQueue.Name, // queue
+		"",             // consumer
+		true,           // auto-ack
+		false,          // exclusive
+		false,          // no-local
+		false,          // no-wait
+		nil,            // args
 	)
 	failOnError(err, "Failed to register a consumer")
 
@@ -84,11 +86,16 @@ func Receive() {
 }
 
 func main() {
-
-	Receive()
 	env, _ := godotenv.Read(".env")
+
+	ConnectToRabbit(env["RABBIT_HOST"],
+		env["RABBIT_PORT"],
+		env["RABBIT_USER"],
+		env["RABBIT_PASSWORD"])
 
 	smtpPort, _ := strconv.Atoi(env["SMTP_PORT"])
 
 	mailing.InitSMTPCon(env["SMTP_USER"], env["SMTP_PASSWORD"], env["SMTP_HOST"], smtpPort)
+
+	Receive()
 }
