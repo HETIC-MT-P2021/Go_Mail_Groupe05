@@ -1,4 +1,4 @@
-package routes
+package router
 
 import (
 	"net/http"
@@ -14,8 +14,8 @@ func healthCheck(c *gin.Context) {
 	})
 }
 
-// StartRouter will launch the web server
-func StartRouter(apiPort string) {
+// Configure setup routes and their handlers
+func Configure() *gin.Engine {
 	router := gin.New()
 
 	public := router.Group("/")
@@ -54,5 +54,5 @@ func StartRouter(apiPort string) {
 		apiRoutes.POST("/customer/unlink/", controllers.UnlinkCustomerMailingList)
 	}
 
-	router.Run(":" + apiPort)
+	return router
 }

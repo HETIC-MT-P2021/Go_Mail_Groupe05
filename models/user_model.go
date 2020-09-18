@@ -47,12 +47,12 @@ func GetUser(email string, getPassword bool) (SavedUser, error) {
 
 	switch err {
 	case sql.ErrNoRows:
-		return user, errors.New("Notfound, no user found for this email")
+		return user, errors.New("notfound, no user found for this email")
 	case nil:
 		return user, nil
 
 	default:
-		return user, errors.New("Internal Server error")
+		return user, errors.New("internal Server error")
 	}
 }
 

@@ -5,7 +5,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"packages.hetic.net/gomail/models"
-	"packages.hetic.net/gomail/routes"
+	"packages.hetic.net/gomail/router"
 	"packages.hetic.net/gomail/utils"
 )
 
@@ -22,5 +22,5 @@ func main() {
 
 	utils.InitSMTPCon(env["SMTP_USER"], env["SMTP_PASSWORD"], env["SMTP_HOST"], 25)
 
-	routes.StartRouter(env["API_PORT"])
+	router.Configure().Run(":" + env["API_PORT"])
 }
