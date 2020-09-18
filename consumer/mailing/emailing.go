@@ -1,4 +1,4 @@
-package utils
+package mailing
 
 import (
 	"gopkg.in/gomail.v2"
@@ -7,8 +7,8 @@ import (
 var smtpCon *gomail.Dialer
 
 // InitSMTPCon sets up global smtp con
-func InitSMTPCon(stmpUser string, smtpPw string) {
-	tempCon := gomail.NewDialer("smtp.gmail.com", 465, stmpUser, smtpPw)
+func InitSMTPCon(stmpUser string, smtpPw string, smtpHost string, smtpPort int) {
+	tempCon := gomail.NewDialer(smtpHost, smtpPort, stmpUser, smtpPw)
 	smtpCon = tempCon
 }
 
