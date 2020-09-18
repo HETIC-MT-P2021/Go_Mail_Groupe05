@@ -4,3 +4,4 @@ tmp
 **/*/bin
 /vendor
 .DS_Store
+fake-smtp-emails

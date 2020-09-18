@@ -164,5 +164,5 @@ func RefreshTokenIsValid(refreshToken string) (string, error) {
 		return userID, nil
 	}
 
-	return "", errors.New("Refresh token expired")
+	return "", errors.New("refresh token expired")
 }

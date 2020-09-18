@@ -1,30 +1,13 @@
 version: "3"
 
 services:
-  app:
-    build: .
-    environment:
-      GIN_MODE: "release"
-    volumes:
-      - .:/app
-    working_dir: /app
+  fake-smtp:
+    image: munkyboy/fakesmtp
+    container_name: fake-smtp
     ports:
-      - "8081:8081"
-    command: go run main.go
-    links:
-      - database
-
-  database:
-    image: postgres:13-alpine
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: fuFUn6S3NENFSAx5
-      POSTGRES_USER: mailer
-      POSTGRES_DB: gomail
+      - "25:25"
     volumes:
-      - ./db:/docker-entrypoint-initdb.d
-    ports:
-      - 5432:5432
+      - ./fake-smtp-emails:/var/mail
 
   rabbit:
     image: rabbitmq:3-management
@@ -39,3 +22,30 @@ services:
       - 5672:5672
     labels:
       NAME: rabbitmq
+
+  database:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_DB: "${DB_NAME}"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+
+  app:
+    build: .
+    environment:
+      GIN_MODE: release
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - 8081:8081
+    command: go run main.go
+    links:
+      - database
+      - fake-smtp
