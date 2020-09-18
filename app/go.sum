@@ -1,4 +1,6 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/HETIC-MT-P2021/Go_Mail_Groupe05 v0.0.0-20200918140650-8f801f6a1995 h1:CB8jooMbbgE87SKB4zQJLWkLqV8M9aUYNAqlDGYJp3w=
+github.com/HETIC-MT-P2021/Go_Mail_Groupe05 v0.0.0-20200918140650-8f801f6a1995/go.mod h1:+HfHfYlKOtsg1JcjMoB2c94KOr+TnNKyKk3jLQxHv5g=
 github.com/cosmtrek/air v1.21.2 h1:PwChdKs3qlSkKucKwwC04daw5eoy4SVgiEBQiHX5L9A=
 github.com/cosmtrek/air v1.21.2/go.mod h1:5EsgUqrBIHlW2ghNoevwPBEG1FQvF5XNulikjPte538=
 github.com/creack/pty v1.1.9 h1:uDmaGzcdjhF4i/plgjmEsriH11Y0o7RKapEf/LDaM3w=

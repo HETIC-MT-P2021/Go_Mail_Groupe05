@@ -1,5 +1,6 @@
 .env
-tmp
+./app/tmp
+./consumer/tmp
 **/*/assets
 **/*/bin
 /vendor

@@ -39,33 +39,24 @@ services:
   mail-consumer:
     build: ./consumer
     volumes:
-      - .:/mail-consumer
-    working_dir: /mail-consumer
-    command: go run main.go
-    environment:
-      RABBIT_HOST: "${RABBIT_HOST}"
-      RABBIT_PORT: "${RABBIT_PORT}"
-      RABBIT_USER: "${RABBIT_USER}"
-      RABBIT_PASSWORD: "${RABBIT_PASSWORD}"
-      SMTP_HOST: "${SMTP_HOST}"
-      SMTP_PORT: "${SMTP_PORT}"
-      SMTP_USER: "${SMTP_USER}"
-      SMTP_PASSWORD: "${SMTP_PASSWORD}"
+      - ./consumer:/consumer
+    working_dir: /consumer
+    command: go run ./main.go
     links:
       - rabbit
     depends_on:
       - rabbit
 
   app:
-    build: .
+    build: ./app
     environment:
       GIN_MODE: release
     volumes:
-      - .:/app
+      - ./app:/app
     working_dir: /app
     ports:
       - 8081:8081
-    command: go run main.go
+    command: go run ./main.goapp
     links:
       - database
       - fake-smtp
