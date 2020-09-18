@@ -13,15 +13,25 @@ services:
     command: go run main.go
     links:
       - database
+      - fake-smtp
 
   database:
     image: postgres:13-alpine
     restart: always
     environment:
-      POSTGRES_PASSWORD: fuFUn6S3NENFSAx5
-      POSTGRES_USER: mailer
-      POSTGRES_DB: gomail
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_DB: "${DB_NAME}"
     volumes:
       - ./db:/docker-entrypoint-initdb.d
+      - ./postgres-data:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - "5433:5432"
+
+  fake-smtp:
+    image: munkyboy/fakesmtp
+    container_name: fake-smtp
+    ports:
+      - "25:25"
+    volumes:
+      - ./fake-smtp-emails:/var/mail
