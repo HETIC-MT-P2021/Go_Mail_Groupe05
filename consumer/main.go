@@ -3,36 +3,51 @@ package consumer
 
 import (
 	"log"
+	"fmt"
 
 	"github.com/streadway/amqp"
 )
+
+// RabbitMQ connection global instance
+var RabbitMQ *amqp.Connection
 
 func failOnError(err error, msg string) {
 	if err != nil {
 		log.Fatalf("%s: %s", msg, err)
 	}
 }
+// ConnectToRabbit connects to RabbitMQ instance
+func ConnectToRabbit(host string, port string, user string, password string) {
+	connectionString := fmt.Sprintf("amqp://%s:%s@%s:%s/", user, password, host, port)
+	instanceTmp, err := amqp.Dial(connectionString)
 
-func main() {
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
-	defer conn.Close()
+	log.Println("Connected to RabbitMQ server successfully!")
 
-	ch, err := conn.Channel()
+	RabbitMQ = instanceTmp
+}
+
+
+// PublishMailData sends mail data to message broker
+func PublishMailData() {
+	channel, err := RabbitMQ.Channel()
+
 	failOnError(err, "Failed to open a channel")
-	defer ch.Close()
+	defer channel.Close()
 
-	q, err := ch.QueueDeclare(
-		"hello", // name
+
+
+	q, err := channel.QueueDeclare(
+		"mails", // name
 		false,   // durable
-		false,   // delete when unused
+		true,   // delete when unused
 		false,   // exclusive
 		false,   // no-wait
 		nil,     // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 
-	msgs, err := ch.Consume(
+	msgs, err := channel.Consume(
 		q.Name, // queue
 		"",     // consumer
 		true,   // auto-ack
