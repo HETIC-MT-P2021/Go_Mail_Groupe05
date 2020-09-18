@@ -6,8 +6,6 @@ RUN mkdir /consumer
 ADD . /consumer
 WORKDIR /consumer
 
-RUN ls
-
 RUN go mod tidy
 RUN go build -o main .
 

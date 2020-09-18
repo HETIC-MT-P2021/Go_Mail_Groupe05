@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/models"
-	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/producer"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/app/models"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/app/producer"
 	"github.com/gin-gonic/gin"
 )
 

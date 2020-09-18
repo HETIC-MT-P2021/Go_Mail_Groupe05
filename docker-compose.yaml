@@ -56,7 +56,7 @@ services:
     working_dir: /app
     ports:
       - 8081:8081
-    command: go run ./main.goapp
+    command: go run ./main.go
     links:
       - database
       - fake-smtp

@@ -45,8 +45,8 @@ func ConnectToRabbit(host string, port string, user string, password string) {
 
 	q, err := channel.QueueDeclare(
 		"mails", // name
-		true,    // durable
-		false,   // delete when unused
+		false,   // durable
+		true,    // delete when unused
 		false,   // exclusive
 		false,   // no-wait
 		nil,     // arguments

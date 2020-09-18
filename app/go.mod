@@ -1,9 +1,8 @@
 module github.com/HETIC-MT-P2021/Go_Mail_Groupe05/app
 
-go 1.14
+go 1.15
 
 require (
-	github.com/HETIC-MT-P2021/Go_Mail_Groupe05 v0.0.0-20200918140650-8f801f6a1995
 	github.com/cosmtrek/air v1.21.2 // indirect
 	github.com/creack/pty v1.1.11 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible

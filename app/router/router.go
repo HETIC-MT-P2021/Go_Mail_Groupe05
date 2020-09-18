@@ -3,7 +3,7 @@ package router
 import (
 	"net/http"
 
-	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/controllers"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/app/controllers"
 	"github.com/gin-gonic/gin"
 )
 

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/models"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/app/models"
 )
 
 // GetCustomer handle request to get a customer

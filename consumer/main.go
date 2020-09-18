@@ -45,7 +45,6 @@ func ConnectToRabbit(host string, port string, user string, password string) {
 	channel, err := instanceTmp.Channel()
 
 	failOnError(err, "Failed to open a channel")
-	defer channel.Close()
 
 	q, err := channel.QueueDeclare(
 		"mails", // name
@@ -62,7 +61,6 @@ func ConnectToRabbit(host string, port string, user string, password string) {
 	MailChannel = channel
 }
 
-// PublishMailData sends mail data to message broker
 func Receive() {
 	msgs, err := MailChannel.Consume(
 		MailQueue.Name, // queue
@@ -88,7 +86,6 @@ func Receive() {
 }
 
 func main() {
-	println("BOI")
 	env, _ := godotenv.Read(".env")
 
 	ConnectToRabbit(env["RABBIT_HOST"],
