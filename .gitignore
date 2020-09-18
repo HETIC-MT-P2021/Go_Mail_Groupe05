@@ -1,6 +1,6 @@
-pkg
-src/.env
+.env
 **/*/tmp
 **/*/assets
 **/*/bin
-**/*/vendor
+/vendor
+.DS_Store
