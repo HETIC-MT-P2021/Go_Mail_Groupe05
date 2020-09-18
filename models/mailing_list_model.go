@@ -72,7 +72,7 @@ func GetMailingList(mailingListID string, c *gin.Context) (MailingList, []Custom
 	}
 
 	if len(thisCustomersID) == 0 {
-		return thisMailingList, thisCustomers, errors.New("No customer found for this mailing list")
+		return thisMailingList, thisCustomers, errors.New("no customer found for this mailing list")
 	}
 
 	// Get information for each customers

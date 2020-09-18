@@ -48,7 +48,7 @@ func GetBusiness(businessID string) (Business, error) {
 		return business, nil
 
 	default:
-		return business, errors.New("Internal Server error")
+		return business, errors.New("internal Server error")
 	}
 }
 
@@ -67,11 +67,11 @@ func GetBusinessByName(businessName string) (Business, error) {
 
 	switch err {
 	case sql.ErrNoRows:
-		return business, errors.New("Notfound, no business found for this name")
+		return business, errors.New("notfound, no business found for this name")
 	case nil:
 		return business, nil
 
 	default:
-		return business, errors.New("Internal Server error")
+		return business, errors.New("internal Server error")
 	}
 }
