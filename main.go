@@ -20,7 +20,7 @@ func main() {
 
 	models.ConnectToDB(env["DB_HOST"], env["DB_NAME"], env["DB_USER"], env["DB_PASSWORD"], dbPort)
 
-	utils.InitSMTPCon(env["SMTP_USER"], env["SMTP_PASSWORD"])
+	utils.InitSMTPCon(env["SMTP_USER"], env["SMTP_PASSWORD"], env["SMTP_HOST"], 25)
 
 	routes.StartRouter(env["API_PORT"])
 }
