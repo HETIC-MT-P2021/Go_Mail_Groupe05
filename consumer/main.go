@@ -4,8 +4,8 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/consumer/mailing"
 	"github.com/joho/godotenv"
-	"packages.hetic.net/gomail/consumer/mailing"
 )
 
 func handleError(err error, msg string) {

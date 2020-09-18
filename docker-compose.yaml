@@ -36,6 +36,22 @@ services:
     ports:
       - 5433:5432
 
+  mail-consumer:
+    build: ./consumer
+    volumes:
+      - .:/mail-consumer
+    working_dir: /mail-consumer
+    command: go run main.go
+    environment:
+      SMTP_HOST: "${SMTP_HOST}"
+      SMTP_PORT: "${SMTP_PORT}"
+      SMTP_USER: "${SMTP_USER}"
+      SMTP_PASSWORD: "${SMTP_PASSWORD}"
+    links:
+      - rabbit
+    depends_on:
+      - rabbit
+
   app:
     build: .
     environment:
@@ -49,3 +65,7 @@ services:
     links:
       - database
       - fake-smtp
+    depends_on:
+      - database
+      - fake-smtp
+      - mail-consumer

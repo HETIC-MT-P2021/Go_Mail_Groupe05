@@ -4,10 +4,10 @@ import (
 	"strconv"
 
 	"github.com/joho/godotenv"
-	"packages.hetic.net/gomail/models"
-	"packages.hetic.net/gomail/producer"
-	"packages.hetic.net/gomail/router"
-	"packages.hetic.net/gomail/utils"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/models"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/producer"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/router"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/utils"
 )
 
 func main() {

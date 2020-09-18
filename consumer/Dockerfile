@@ -1,11 +1,16 @@
-FROM golang:1.7
+FROM golang:alpine
 
-WORKDIR /go/src/github.com/HETIC-MT-P2021/Go_Mail_Groupe05
+RUN apk add --no-cache git
+RUN mkdir /mail-consumer
 
-COPY main.go main.go
+ADD . /mail-consumer
+WORKDIR /mail-consumer
 
 RUN go get github.com/streadway/amqp/...
-RUN go build -o main .
-RUN ls
+RUN go get github.com/joho/godotenv
+RUN go get gopkg.in/gomail.v2
+RUN go get https://github.com/HETIC-MT-P2021/Go_Mail_Groupe05/consumer/mailing
 
-CMD ./main
+RUN go build -o main .
+
+CMD ["./main"]

@@ -1,4 +1,4 @@
-module packages.hetic.net/gomail
+module github.com/HETIC-MT-P2021/Go_Mail_Groupe05
 
 go 1.14
 

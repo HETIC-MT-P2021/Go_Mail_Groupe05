@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"packages.hetic.net/gomail/models"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/models"
 )
 
 // CreateMailingList handle request to send create a new mailingList

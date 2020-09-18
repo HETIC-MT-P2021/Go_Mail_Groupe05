@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"packages.hetic.net/gomail/models"
-	"packages.hetic.net/gomail/utils"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/models"
+	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/utils"
 )
 
 // BroadcastCampaign handle request to send a mail to all customer of a campaign
