@@ -10,6 +10,8 @@ import (
 
 // RabbitMQ connection global instance
 var RabbitMQ *amqp.Connection
+var MailQueue *amqp.Queue
+var MailChannel *amqp.Channel
 
 func failOnError(err error, msg string) {
 	if err != nil {
@@ -37,12 +39,7 @@ func ConnectToRabbit(host string, port string, user string, password string) {
 	failOnError(err, "Failed to connect to RabbitMQ")
 	log.Println("Connected to RabbitMQ server successfully!")
 
-	RabbitMQ = instanceTmp
-}
-
-// PublishMailData sends mail data to message broker
-func PublishMailData() {
-	channel, err := RabbitMQ.Channel()
+	channel, err := instanceTmp.Channel()
 
 	failOnError(err, "Failed to open a channel")
 	defer channel.Close()
@@ -57,24 +54,29 @@ func PublishMailData() {
 	)
 	failOnError(err, "Failed to declare a queue")
 
-	body := `
-		{
-			customerEmail: "akakpo.jeanjacques@gmail.com",
-			mailFrom: "akakpo.jeanjacques@gmail.com",
-			subject: "Mail subject",
-			content: "Mail content is just a lorem ipsum"
-		}
-	`
-	err = channel.Publish(
-		"",     // exchange
-		q.Name, // routing key
-		false,  // mandatory
-		false,  // immediate
-		amqp.Publishing{
-			ContentType: "application/json",
-			Body:        []byte(body),
-		})
+	RabbitMQ = instanceTmp
+	MailQueue = &q
+	MailChannel = channel
+}
 
-	log.Printf(" [x] Sent %s", body)
-	failOnError(err, "Failed to publish a message")
+// PublishMailData sends mail data to message broker
+func PublishMailData(subject string, content string, from string, to []string) {
+
+	for i := 0; i < len(to); i++ {
+		body := fmt.Sprintf("{customerEmail: %s,content: %s,from: %s,to: %s}", subject, content, from, to[i])
+
+		err := MailChannel.Publish(
+			"",             // exchange
+			MailQueue.Name, // routing key
+			false,          // mandatory
+			false,          // immediate
+			amqp.Publishing{
+				ContentType: "application/json",
+				Body:        []byte(body),
+			})
+
+		log.Printf(" [x] Sent %s", body)
+		failOnError(err, "Failed to publish a message")
+	}
+
 }

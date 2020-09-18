@@ -3,13 +3,11 @@ package router
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/controllers"
-	"github.com/HETIC-MT-P2021/Go_Mail_Groupe05/producer"
+	"github.com/gin-gonic/gin"
 )
 
 func healthCheck(c *gin.Context) {
-	producer.PublishMailData()
 	c.JSON(http.StatusOK, gin.H{
 		"message": "API is running successfully",
 		"success": true,
