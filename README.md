@@ -8,7 +8,15 @@ We used Golang for our API, and Postgresql as a database.
 - User authentication with JWT.
 - Marketing Automation : Creation of marketing campaigns with sending emails to a specific mailing list
 
-## Installation
+## Stating with Docker
+
+After cloning the repo, `cd` into the project, create the .env in /app and /consumer according to .env.example, and run following commands
+
+```bash
+docker-compose up --build
+```
+
+## Starting Manualy
 
 The project requires Golang `1.14.4` version
 
@@ -36,5 +44,7 @@ You can find the api doc by clicking on the link below :
 - [Myouuu](https://github.com/myouuu)
 - [Tsabot](https://github.com/Tsabot)
 - [Jean-Jacques](https://github.com/gensjaak)
+
+### License
 
 The code is available under the MIT license.
